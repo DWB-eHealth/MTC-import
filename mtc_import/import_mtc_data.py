@@ -4,7 +4,7 @@ from mtc_form_csv_parser import MTCFormCSVParser
 
 def main():
     if not len(sys.argv) > 1:
-        print "Usage: python import/import_mtc_data.py <filepath>"
+        print "Usage: python mtc_import/import_mtc_data.py <filepath>"
         return
 
     filepath = sys.argv[1]
