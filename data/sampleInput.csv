@@ -1,0 +1,3 @@
+RegistrationNb,Id_Rx_observance,Rx_Month,Obs_Month,Obs_year,NA,NA,TtrDAys,PrecribedDays,MissedDays,UncomplDays
+T001,GE145474,11,5,2015,,,31,18,5,9
+T001,GE145474,12,6,2015,,,30,16,4,8
