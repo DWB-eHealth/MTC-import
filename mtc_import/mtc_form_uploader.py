@@ -4,5 +4,8 @@ class MTCFormUploader:
         self.api_service = api_service
 
     def upload(self):
+        patient_uuid = self.api_service.get_patient_uuid(self.mtc_form.registration_number)
+        if patient_uuid is None:
+            print "Patient with Registration Number %s does not exist" % self.mtc_form.registration_number
 
-        print("Uploading MTC form")
+        print "Get MTC forms"

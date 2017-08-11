@@ -20,7 +20,7 @@ def describe_mtc_form():
     def should_assign_properties_from_csv_row():
         csv_row = mock_csv_row()
         form = MTCForm(csv_row)
-        assert form.regNumber == csv_row['RegistrationNb']
+        assert form.registration_number == csv_row['RegistrationNb']
         assert form.month == 12
         assert form.year  == 2015
         assert form.ideal_treatment_days  == 23
