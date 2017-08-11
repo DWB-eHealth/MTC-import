@@ -19,3 +19,26 @@ class BahmniAPIService:
             return results[0]['uuid']
         else:
             return None
+
+    def get_patient_program_uuid(self, patient_uuid):
+        url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/bahmniprogramenrollment")
+        params = {
+            "patient": patient_uuid
+        }
+        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
+        results = response.json()['results']
+        if len(results) == 1:
+            return results[0]['uuid']
+        else:
+            return None
+
+
+    def get_existing_mtc_forms(self, patient_uuid, patient_program_uuid):
+        url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/obs")
+        params = {
+            "conceptNames": "Monthly Treatment Completeness Template",
+            "numberOfVisits": 1000,
+            "patient": patient_uuid,
+            "patientProgramUuid": patient_program_uuid,
+            "v": "visitFormDetails"
+        }
