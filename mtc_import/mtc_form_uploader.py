@@ -1,7 +1,12 @@
+import urllib3
+
 class MTCFormUploader:
     def __init__(self, mtc_form, api_service):
         self.mtc_form = mtc_form
         self.api_service = api_service
+
+        # Disabling InsecureRequestWarning in development environment since SSL certificate is unverified
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     def upload(self):
         location_uuid = self.api_service.get_login_location_uuid()
