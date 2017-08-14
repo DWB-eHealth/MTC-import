@@ -53,5 +53,8 @@ class BahmniAPIService:
             "numberOfVisits": 1000,
             "patient": patient_uuid,
             "patientProgramUuid": patient_program_uuid,
-            "v": "visitFormDetails"
+            "v": "visitFormDetails",
+            "s": "byPatientUuid"
         }
+        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
+        return response.json()['results']
