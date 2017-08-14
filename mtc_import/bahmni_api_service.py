@@ -12,7 +12,8 @@ class BahmniAPIService:
             "tags" : "Login Location"
         }
         response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
-        results = response.json()['results']
+        results = response.json().get('results', [])
+
         if len(results) > 0:
             return results[0]['uuid']
         else:
