@@ -70,5 +70,7 @@ class BahmniAPIService:
         return self.get(url, params)['results']
 
     def create_or_update_encounter(self, data):
+        print json.dumps(data, indent=2)
         url = "%s%s" % (self.url,  "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter")
-        self.post(url, data)
+        response = self.post(url, data)
+        print response.status_code

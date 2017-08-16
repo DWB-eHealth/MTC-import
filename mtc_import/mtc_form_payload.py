@@ -32,7 +32,38 @@ class MTCFormPayload:
                                                {"value": self.mtc_form.missed_prescribed_days}),
                         build_observation("c309fe72-0965-4801-9fb5-77634e064ec9", "MTC, Incomplete prescribed days",
                                                {"value": self.mtc_form.incomplete_prescribed_days})
-                    ]
+                    ] + list(map(self.build_drug_payload, self.mtc_form.dot_rate_per_drug))
                 })
             ]
         }
+
+    def build_drug_payload(self, drug_form):
+        return build_observation("f881546b-3830-4831-bb1d-d462ee6722aa", "MTC, DOT rate details",
+                          {"groupMembers": [
+                              build_observation("e66b9a70-b06f-4f67-87e4-c6913b6ad07d", "MTC, Drug name",
+                                                {"value": self.map_concept_name_and_uuid(drug_form.drug_name)}),
+                              build_observation("20799fcd-1533-4bf3-99a5-848d01860ee6", "MTC, Drug prescribed days",
+                                                {"value": drug_form.prescribed_days}),
+                              build_observation("01bf2729-e05b-43c5-af05-8bfd782c5298","MTC, Drug missed days",
+                                                {"value": drug_form.missed_days}),
+                              build_observation("8743457d-62ba-4e15-9e16-5bb24b1b3760","MTC, Drug observed days",
+                                                {"value": drug_form.observed_days})
+                          ]})
+
+    def map_concept_name_and_uuid(self, drug_name):
+        DRUG_CONCEPTS = {
+            'Bdq': {
+                "uuid": "163143AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "name": "Bedaquiline"
+            },
+            'Dlm': {
+                "uuid": "163144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "name": "Delamanid"
+            },
+            'Cfz': {
+                "uuid": "73581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "name": "Clofazimine"
+            },
+        }
+
+        return DRUG_CONCEPTS[drug_name]
