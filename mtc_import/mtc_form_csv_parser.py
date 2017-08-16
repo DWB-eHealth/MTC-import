@@ -9,7 +9,7 @@ class MTCFormCSVParser:
         self.filepath = filepath
 
         if not os.path.exists(filepath):
-            raise FileExistsError("Specified filepath does not exist")
+            raise IOError("Specified filepath does not exist")
 
     def get_forms(self):
         forms = []
