@@ -1,4 +1,5 @@
 import urllib3
+import urllib
 import requests
 import json
 
@@ -9,6 +10,7 @@ class BahmniAPIService:
         self.username = username
         self.password = password
         self.url = url
+        self.concept_uuid_cache = {}
 
         # Disabling InsecureRequestWarning in development environment since SSL certificate is unverified
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -68,6 +70,25 @@ class BahmniAPIService:
             "s": "byPatientUuid"
         }
         return self.get(url, params)['results']
+
+    def get_concept_uuid(self, fully_specified_concept_name):
+        cached_concept_uuid = self.concept_uuid_cache.get(fully_specified_concept_name)
+        if cached_concept_uuid:
+            return cached_concept_uuid
+        else:
+            url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/concept")
+            params = urllib.urlencode({
+                'q': fully_specified_concept_name
+            })
+            results = self.get(url, params)['results']
+
+            matching_results = [result for result in results if result['display'] == fully_specified_concept_name]
+            if len(matching_results) == 1:
+                concept_uuid = matching_results[0]['uuid']
+                self.concept_uuid_cache[fully_specified_concept_name] = concept_uuid
+                return concept_uuid
+            else:
+                raise LookupError("Could not find unique concept with name %s" % fully_specified_concept_name)
 
     def create_or_update_encounter(self, data):
         print json.dumps(data, indent=2)
