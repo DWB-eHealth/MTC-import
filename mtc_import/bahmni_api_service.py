@@ -1,19 +1,29 @@
 import requests
+import json
+
 
 class BahmniAPIService:
+
     def __init__(self, username, password, url):
         self.username = username
         self.password = password
         self.url = url
+
+    def get(self, url, params):
+        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
+        return response.json()
+
+    def post(self, url, data):
+        if type(data) is dict:
+            data = json.dumps(data)
+        return requests.post(url, auth=(self.username, self.password), data=data, verify=False, headers={'Content-type': 'application/json'})
 
     def get_login_location_uuid(self):
         url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/location")
         params = {
             "tags" : "Login Location"
         }
-        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
-        results = response.json().get('results', [])
-
+        results = self.get(url, params).get('results', [])
         if len(results) > 0:
             return results[0]['uuid']
         else:
@@ -26,8 +36,7 @@ class BahmniAPIService:
             "programAttributeFieldName": "Registration Number",
             "programAttributeFieldValue": registration_number
         }
-        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
-        results = response.json()['pageOfResults']
+        results = self.get(url, params)['pageOfResults']
         if len(results) > 0:
             return results[0]['uuid']
         else:
@@ -38,8 +47,7 @@ class BahmniAPIService:
         params = {
             "patient": patient_uuid
         }
-        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
-        results = response.json()['results']
+        results = self.get(url, params)['results']
         if len(results) == 1:
             return results[0]['uuid']
         else:
@@ -56,5 +64,8 @@ class BahmniAPIService:
             "v": "visitFormDetails",
             "s": "byPatientUuid"
         }
-        response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
-        return response.json()['results']
+        return self.get(url, params)['results']
+
+    def create_or_update_encounter(self, data):
+        url = "%s%s" % (self.url,  "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter")
+        self.post(url, data)
