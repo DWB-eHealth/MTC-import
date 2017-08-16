@@ -3,6 +3,7 @@ import os
 
 from mtc_form import MTCForm
 
+
 class MTCFormCSVParser:
     def __init__(self, filepath):
         self.filepath = filepath

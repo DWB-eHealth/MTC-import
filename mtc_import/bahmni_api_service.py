@@ -1,3 +1,4 @@
+import urllib3
 import requests
 import json
 
@@ -8,6 +9,9 @@ class BahmniAPIService:
         self.username = username
         self.password = password
         self.url = url
+
+        # Disabling InsecureRequestWarning in development environment since SSL certificate is unverified
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     def get(self, url, params):
         response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
@@ -52,7 +56,6 @@ class BahmniAPIService:
             return results[0]['uuid']
         else:
             return None
-
 
     def get_existing_mtc_forms(self, patient_uuid, patient_program_uuid):
         url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/obs")
