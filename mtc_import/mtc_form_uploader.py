@@ -26,7 +26,7 @@ class MTCFormUploader:
         existing_forms = self.api_service.get_existing_mtc_forms(patient_uuid, patient_program_uuid)
         form_uuid = ExistingMTCForms(existing_forms).get_observation_uuid_for_year_and_month(self.mtc_form.year, self.mtc_form.month)
         if form_uuid is None:
-            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid).build_payload()
+            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service).build_payload()
             self.api_service.create_or_update_encounter(payload)
             print "Created new MTC form for patient with Registration Number %s" % self.mtc_form.registration_number
         else:
