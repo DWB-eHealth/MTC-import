@@ -95,3 +95,12 @@ class BahmniAPIService:
         url = "%s%s" % (self.url,  "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter")
         response = self.post(url, data)
         return response.ok
+
+    def get_observation(self, observation_uuid):
+        url = "%s%s" % (self.url,  "/openmrs/ws/rest/v1/bahmnicore/observations")
+        params = {
+            "observationUuid" : observation_uuid
+        }
+        result = self.get(url, params)
+        print json.dumps(result, indent=2)
+        return result

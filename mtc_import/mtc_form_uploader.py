@@ -30,7 +30,14 @@ class MTCFormUploader:
             if self.api_service.create_or_update_encounter(payload):
                 print "Created new MTC form for patient with Registration Number %s" % self.mtc_form.registration_number
             else:
-                print "[ERROR] Unable to create or edit an encounterfor patient with Registration Number:%s Month:%s Year:%s" \
+                print "[ERROR] Unable to create an encounter for patient with Registration Number:%s Month:%s Year:%s" \
                       % (self.mtc_form.registration_number,self.mtc_form.month,self.mtc_form.year)
         else:
-            print "Update existing MTC form with UUID %s" % form_uuid
+            existing_observation = self.api_service.get_observation(form_uuid)
+            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service).build_payload()
+            update_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            if self.api_service.create_or_update_encounter(update_payload):
+                print "Updated MTC form for patient with Registration Number %s" % self.mtc_form.registration_number
+            else:
+                print "[ERROR] Unable to edit an encounter for patient with Registration Number:%s Month:%s Year:%s" \
+                      % (self.mtc_form.registration_number,self.mtc_form.month,self.mtc_form.year)
