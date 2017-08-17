@@ -44,7 +44,6 @@ def describe_mtc_form():
             form = MTCForm(csv_row)
             assert len(form.dot_rate_per_drug) == 1
             drug_form = form.dot_rate_per_drug[0]
-            assert drug_form.drug_name == 'Bdq'
             assert drug_form.prescribed_days == 15
             assert drug_form.observed_days == 8
             assert drug_form.missed_days == 5
@@ -78,3 +77,23 @@ def describe_mtc_form():
             })
             form = MTCForm(csv_row)
             assert len(form.dot_rate_per_drug) == 2
+
+        def should_map_drug_abbreviation_to_concept_name():
+            csv_row = mock_csv_row({
+                'DBdq': '15',
+                'OBdq': '8',
+                'MBdq': '5'
+            })
+
+            form = MTCForm(csv_row)
+            drug_form = form.dot_rate_per_drug[0]
+            assert drug_form.drug_name == 'Bedaquiline'
+
+        def should_not_include_drugs_with_unrecognised_abbreviations():
+            csv_row = mock_csv_row({
+                'DABC': '15',
+                'OABC': '8',
+                'MABC': '5'
+            })
+            form = MTCForm(csv_row)
+            assert len(form.dot_rate_per_drug) == 0

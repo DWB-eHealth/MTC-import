@@ -44,26 +44,11 @@ class MTCFormPayload:
     def build_drug_payload(self, drug_form):
         return self.build_observation("MTC, DOT rate details",
                           {"groupMembers": [
-                              self.build_observation("MTC, Drug name", {"value": self.map_concept_name_and_uuid(drug_form.drug_name)}),
+                              self.build_observation("MTC, Drug name", {"value": {
+                                  "uuid": self.api_service.get_concept_uuid(drug_form.drug_name),
+                                  "name": drug_form.drug_name
+                              } }),
                               self.build_observation("MTC, Drug prescribed days", {"value": drug_form.prescribed_days}),
                               self.build_observation("MTC, Drug missed days", {"value": drug_form.missed_days}),
                               self.build_observation("MTC, Drug observed days", {"value": drug_form.observed_days})
                           ]})
-
-    def map_concept_name_and_uuid(self, drug_name):
-        DRUG_CONCEPTS = {
-            'Bdq': {
-                "uuid": "163143AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-                "name": "Bedaquiline"
-            },
-            'Dlm': {
-                "uuid": "163144AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-                "name": "Delamanid"
-            },
-            'Cfz': {
-                "uuid": "73581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-                "name": "Clofazimine"
-            },
-        }
-
-        return DRUG_CONCEPTS[drug_name]

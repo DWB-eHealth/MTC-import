@@ -1,16 +1,42 @@
 class DotRatePerDrugForm:
-    def __init__(self, drug_name, csv_row):
-        self.drug_name = drug_name
-        self.prescribed_days = self.parse_days(csv_row, 'D' + drug_name)
-        self.observed_days = self.parse_days(csv_row, 'O' + drug_name)
-        self.missed_days = self.parse_days(csv_row, 'M' + drug_name)
+    DRUG_ABBREVIATIONS = {
+        "H": "Isoniazid",
+        "R": "Rifampicin",
+        "E": "Ethambutol",
+        "Z": "Pyrazinamide",
+        "S": "Streptomycin",
+        "Am": "Amikacin",
+        "Km": "Kanamycin",
+        "Cm": "Capreomycin",
+        "Lfx": "Levofloxacin",
+        "Mfx": "Moxifloxacin",
+        "Pto": "Prothionamide",
+        "Eto": "Ethionamide",
+        "Cs": "Cycloserine",
+        "Trd": "Terizidone",
+        "PAS": "P-Aminosalicylic Acid",
+        "PAS-Na": "P-Aminosalicylic Acid Monosodium Salt",
+        "Bdq": "Bedaquiline",
+        "Dlm": "Delamanid",
+        "Lzd": "Linezolid",
+        "Cfz": "Clofazimine",
+        "Imp/Cln": "Cilastatin / Imipenem",
+        "Amx/Clv": "Amoxicillin And Clavulanic Acid",
+        "T": "Thioacetazone"
+    }
+
+    def __init__(self, drug_abbreviation, csv_row):
+        self.drug_name = self.DRUG_ABBREVIATIONS.get(drug_abbreviation)
+        self.prescribed_days = self.parse_days(csv_row, 'D' + drug_abbreviation)
+        self.observed_days = self.parse_days(csv_row, 'O' + drug_abbreviation)
+        self.missed_days = self.parse_days(csv_row, 'M' + drug_abbreviation)
 
     def parse_days(self, csv_row, column):
         string_value = csv_row.get(column)
         return int(string_value) if string_value else None
 
     def is_valid(self):
-        return self.prescribed_days and self.observed_days and self.missed_days
+        return self.prescribed_days and self.observed_days and self.missed_days and self.drug_name
 
 class MTCForm:
     def __init__(self, csv_row):

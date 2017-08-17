@@ -86,10 +86,10 @@ class BahmniAPIService:
             if len(matching_results) == 1:
                 concept_uuid = matching_results[0]['uuid']
                 self.concept_uuid_cache[fully_specified_concept_name] = concept_uuid
-                print "Getting uuid for the concept: %s" % fully_specified_concept_name
+                print "Retrieving uuid for concept with name: %s" % fully_specified_concept_name
                 return concept_uuid
             else:
-                raise LookupError("Could not find unique concept with name %s" % fully_specified_concept_name)
+                raise LookupError("Could not find unique concept with name: %s" % fully_specified_concept_name)
 
     def create_or_update_encounter(self, data):
         url = "%s%s" % (self.url,  "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter")
