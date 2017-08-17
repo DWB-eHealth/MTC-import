@@ -59,14 +59,14 @@ class BahmniAPIService:
         else:
             return None
 
-    def get_existing_mtc_forms(self, patient_uuid, patient_program_uuid):
+    def get_patient_program_forms(self, patient_uuid, patient_program_uuid, form_name):
         url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/obs")
         params = {
-            "conceptNames": "Monthly Treatment Completeness Template",
+            "conceptNames": form_name,
             "numberOfVisits": 1000,
             "patient": patient_uuid,
             "patientProgramUuid": patient_program_uuid,
-            "v": "visitFormDetails",
+            "v": "default",
             "s": "byPatientUuid"
         }
         return self.get(url, params)['results']
@@ -92,7 +92,6 @@ class BahmniAPIService:
                 raise LookupError("Could not find unique concept with name %s" % fully_specified_concept_name)
 
     def create_or_update_encounter(self, data):
-        # print json.dumps(data, indent=2)
         url = "%s%s" % (self.url,  "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter")
         response = self.post(url, data)
-        print response.status_code
+        return response.ok

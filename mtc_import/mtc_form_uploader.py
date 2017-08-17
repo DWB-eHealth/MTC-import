@@ -23,11 +23,14 @@ class MTCFormUploader:
             print "[ERROR] Patient with Registration Number %s is either not enrolled in any programs, or is enrolled in multiple programs" % self.mtc_form.registration_number
             return
 
-        existing_forms = self.api_service.get_existing_mtc_forms(patient_uuid, patient_program_uuid)
+        existing_forms = self.api_service.get_patient_program_forms(patient_uuid, patient_program_uuid, "Monthly Treatment Completeness Template")
         form_uuid = ExistingMTCForms(existing_forms).get_observation_uuid_for_year_and_month(self.mtc_form.year, self.mtc_form.month)
         if form_uuid is None:
             payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service).build_payload()
-            self.api_service.create_or_update_encounter(payload)
-            print "Created new MTC form for patient with Registration Number %s" % self.mtc_form.registration_number
+            if self.api_service.create_or_update_encounter(payload):
+                print "Created new MTC form for patient with Registration Number %s" % self.mtc_form.registration_number
+            else:
+                print "[ERROR] Unable to create or edit an encounterfor patient with Registration Number:%s Month:%s Year:%s" \
+                      % (self.mtc_form.registration_number,self.mtc_form.month,self.mtc_form.year)
         else:
             print "Update existing MTC form with UUID %s" % form_uuid
