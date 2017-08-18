@@ -156,9 +156,40 @@ def describe_update_payload_transformer():
                 "value": 16
             }))
             existing_observation = mock_existing_observation()
-            existing_observation["groupMembers"].append( mock_observation("mockConceptUuidB", "mockConceptNameB", {
-                "value": 7,
-                "uuid": "mockObservationUuid2"
-            }))
             transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
             assert transformed_payload["observations"][0]["groupMembers"][0].get("uuid") == None
+
+        def should_void_existing_observations_if_no_match_in_new_payload():
+            payload = mock_payload()
+            existing_observation = mock_existing_observation()
+            existing_observation["groupMembers"].append(mock_observation("mockConceptUuidB", "mockConceptNameB", {
+                "uuid": "mockObservationUuid2",
+                "groupMembers": [
+                    mock_observation("mockConceptUuidC", "mockConceptNameC", {
+                        "uuid": "mockObservationUuid3",
+                    })
+                ]
+            }))
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload["observations"][0]["groupMembers"][0]["concept"]["uuid"] == "mockConceptUuidB"
+            assert transformed_payload["observations"][0]["groupMembers"][0]["concept"]["name"] == "mockConceptNameB"
+            assert transformed_payload["observations"][0]["groupMembers"][0]["uuid"] == "mockObservationUuid2"
+            assert transformed_payload["observations"][0]["groupMembers"][0]["voided"] == True
+            assert transformed_payload["observations"][0]["groupMembers"][0]["groupMembers"][0]["concept"]["uuid"] == "mockConceptUuidC"
+            assert transformed_payload["observations"][0]["groupMembers"][0]["groupMembers"][0]["concept"]["name"] == "mockConceptNameC"
+            assert transformed_payload["observations"][0]["groupMembers"][0]["groupMembers"][0]["uuid"] == "mockObservationUuid3"
+            assert transformed_payload["observations"][0]["groupMembers"][0]["groupMembers"][0]["voided"] == True
+
+        def should_not_include_non_essential_attributes_in_voided_observation():
+            payload = mock_payload()
+            existing_observation = mock_existing_observation()
+            existing_observation["groupMembers"].append(mock_observation("mockConceptUuidB", "mockConceptNameB", {
+                "uuid": "mockObservationUuid2",
+                "value": {"conceptClass": "mockClass"},
+                "type": "Numeric"
+            }))
+            existing_observation["groupMembers"][0]["concept"]["conceptClass"] = "mockClass"
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert 'type' not in transformed_payload["observations"][0]["groupMembers"][0].keys()
+            assert 'conceptClass' not in transformed_payload["observations"][0]["groupMembers"][0]["concept"].keys()
+            assert 'conceptClass' not in transformed_payload["observations"][0]["groupMembers"][0]["value"].keys()
