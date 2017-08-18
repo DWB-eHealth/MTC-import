@@ -6,25 +6,25 @@ class UpdatePayloadTransformer:
         self.existing_observation = existing_observation
 
     def transform(self):
-        transformed_payload = self.payload
-        transformed_payload["encounterUuid"] = self.existing_observation.get("encounterUuid")
-        self.transform_group(transformed_payload['observations'], [self.existing_observation])
-        return transformed_payload
+        new_payload = self.payload.copy()
+        new_payload["encounterUuid"] = self.existing_observation.get("encounterUuid")
+        self.transform_observations(new_payload['observations'], [self.existing_observation])
+        return new_payload
 
-    def transform_group(self, payload_group, existing_group):
-        concept_uuids = self.get_unique_concept_uuids(payload_group)
+    def transform_observations(self, new_observations, existing_observations):
+        concept_uuids = self.get_unique_concept_uuids(new_observations)
 
         for concept_uuid in concept_uuids:
-            matching_observations_in_payload_group = [member for member in payload_group if member['concept']['uuid'] == concept_uuid]
-            matching_observations_in_existing_group = [member for member in existing_group if member['concept']['uuid'] == concept_uuid]
-            for index, member in enumerate(matching_observations_in_payload_group):
-                if index < len(matching_observations_in_existing_group):
-                    matching_existing_observation = matching_observations_in_existing_group[index]
-                    member['uuid'] = matching_existing_observation['uuid']
-                    if len(member.get('groupMembers', [])) >=1 :
-                        self.transform_group(member["groupMembers"], matching_existing_observation["groupMembers"])
+            new_observations_for_concept = [observation for observation in new_observations if observation['concept']['uuid'] == concept_uuid]
+            existing_observations_for_concept = [observation for observation in existing_observations if observation['concept']['uuid'] == concept_uuid]
 
+            for index, observation in enumerate(new_observations_for_concept):
+                if index < len(existing_observations_for_concept):
+                    matching_existing_observation = existing_observations_for_concept[index]
+                    observation['uuid'] = matching_existing_observation['uuid']
+                    if observation.get('groupMembers'):
+                        self.transform_observations(observation["groupMembers"], matching_existing_observation["groupMembers"])
 
-    def get_unique_concept_uuids(self, group):
-        uuids = [member['concept']['uuid'] for member in group]
+    def get_unique_concept_uuids(self, observations):
+        uuids = [observation['concept']['uuid'] for observation in observations]
         return list(set(uuids))
