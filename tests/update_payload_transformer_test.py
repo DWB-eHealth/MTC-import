@@ -17,11 +17,7 @@ def describe_update_payload_transformer():
     def mock_payload():
         return mock_observation("mockConceptUuidA", "mockConceptNameA", {
             "value": 15,
-            "groupMembers": [
-                mock_observation("mockConceptUuidB", "mockNestedConceptNameB", {
-                    "value": 16
-                })
-            ]
+            "groupMembers": []
         })
 
     def mock_existing_observation():
@@ -29,12 +25,7 @@ def describe_update_payload_transformer():
             "value": 3,
             "type": "Numeric",
             "uuid": "mockObservationUuid1",
-            "groupMembers": [
-                mock_observation("mockConceptUuidB", "mockConceptNameB", {
-                    "value": 7,
-                    "uuid": "mockObservationUuid2"
-                })
-            ]
+            "groupMembers": []
         })
 
     def describe_transform():
@@ -58,22 +49,43 @@ def describe_update_payload_transformer():
 
         def should_have_value_of_payload_for_group_members():
             payload = mock_payload()
+            payload["groupMembers"].append(mock_observation("mockConceptUuidB", "mockNestedConceptNameB", {
+                "value": 16
+            }))
             existing_observation = mock_existing_observation()
+            existing_observation["groupMembers"].append( mock_observation("mockConceptUuidB", "mockConceptNameB", {
+                "value": 7,
+                "uuid": "mockObservationUuid2"
+            }))
             transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
             assert transformed_payload.get('groupMembers')[0].get('value') == 16
 
         def should_have_uuid_of_existing_observation_for_group_members():
             payload = mock_payload()
+            payload["groupMembers"].append(mock_observation("mockConceptUuidB", "mockNestedConceptNameB", {
+                "value": 16
+            }))
             existing_observation = mock_existing_observation()
+            existing_observation["groupMembers"].append( mock_observation("mockConceptUuidB", "mockConceptNameB", {
+                "value": 7,
+                "uuid": "mockObservationUuid2"
+            }))
             transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
             assert transformed_payload.get('groupMembers')[0].get('uuid') == 'mockObservationUuid2'
 
         def should_have_uuid_of_existing_observation_for_multiple_group_members():
             payload = mock_payload()
+            payload["groupMembers"].append(mock_observation("mockConceptUuidB", "mockNestedConceptNameB", {
+                "value": 16
+            }))
             payload.get("groupMembers").append(mock_observation("mockConceptUuidC", "mockConceptNameC", {
                 "value": 6
             }))
             existing_observation = mock_existing_observation()
+            existing_observation["groupMembers"].append( mock_observation("mockConceptUuidB", "mockConceptNameB", {
+                "value": 7,
+                "uuid": "mockObservationUuid2"
+            }))
             existing_observation.get("groupMembers").append(mock_observation("mockConceptUuidC", "mockConceptNameC", {
                 "value": 18,
                 "uuid": "mockObservationUuid3"
@@ -99,6 +111,28 @@ def describe_update_payload_transformer():
                 "uuid": "mockObservationUuid3"
             }))
             transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
-            assert transformed_payload.get('groupMembers')[1].get('uuid') == 'mockObservationUuid3'
-            assert transformed_payload.get('groupMembers')[2].get('uuid') == 'mockObservationUuid4'
+            assert transformed_payload.get('groupMembers')[0].get('uuid') == 'mockObservationUuid3'
+            assert transformed_payload.get('groupMembers')[1].get('uuid') == 'mockObservationUuid4'
 
+        def should_have_uuid_of_existing_observation_for_nested_group_members():
+            payload = mock_payload()
+            payload.get("groupMembers").append(mock_observation("mockConceptUuidC", "mockConceptNameC", {
+                "groupMembers": [
+                    mock_observation("mockConceptUuidD", "mockConceptNameD", {"value": 5})
+                ]
+            }))
+            existing_observation = mock_existing_observation()
+            existing_observation.get("groupMembers").append(mock_observation("mockConceptUuidC", "mockConceptNameC", {
+                "groupMembers": [
+                    mock_observation("mockConceptUuidD", "mockConceptNameD", {"uuid": "mockObservationUuid4", "value": 5})
+                ],
+                "uuid": "mockObservationUuid3"
+            }))
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload.get("groupMembers")[0].get("groupMembers")[0].get("uuid") == "mockObservationUuid4"
+
+        def should_handle_payload_without_any_group_members():
+            payload = mock_observation("mockConceptUuidA", "mockConceptNameA", {"value": 5})
+            existing_observation = mock_observation("mockConceptUuidA", "mockConceptNameA", {"uuid": "mockObservationUuid1", "value": 7})
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload.get("groupMembers") == None
