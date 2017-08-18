@@ -29,6 +29,7 @@ def describe_update_payload_transformer():
             },
             "uuid": "someObservationUuid",
             "value": 3,
+            "type": "Numeric",
             "groupMembers": [{
                 "concept": {
                     "uuid": "someNestedConceptUuid",
@@ -38,3 +39,22 @@ def describe_update_payload_transformer():
                 "value": 7
             }]
         }
+
+    def describe_transform():
+        def should_have_value_of_payload():
+            payload = mock_payload()
+            existing_observation = mock_existing_observation()
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload.get('value') == 15
+
+        def should_have_uuid_of_existing_observation():
+            payload = mock_payload()
+            existing_observation = mock_existing_observation()
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload.get('uuid') == 'someObservationUuid'
+
+        def should_not_inherit_non_uuid_attributes_from_existing_observation():
+            payload = mock_payload()
+            existing_observation = mock_existing_observation()
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert 'type' not in transformed_payload.keys()

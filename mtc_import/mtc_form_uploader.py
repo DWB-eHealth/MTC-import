@@ -1,6 +1,6 @@
 from existing_mtc_forms import ExistingMTCForms
 from mtc_form_payload import MTCFormPayload
-
+from update_payload_transformer import UpdatePayloadTransformer
 
 class MTCFormUploader:
     def __init__(self, mtc_form, api_service):

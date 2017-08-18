@@ -6,4 +6,6 @@ class UpdatePayloadTransformer:
         self.existing_observation = existing_observation
 
     def transform(self):
-        print
+        transformed_payload = self.payload
+        transformed_payload["uuid"] = self.existing_observation.get("uuid")
+        return transformed_payload
