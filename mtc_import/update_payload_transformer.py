@@ -18,10 +18,11 @@ class UpdatePayloadTransformer:
             matching_observations_in_payload_group = [member for member in payload_group if member['concept']['uuid'] == concept_uuid]
             matching_observations_in_existing_group = [member for member in existing_group if member['concept']['uuid'] == concept_uuid]
             for index, member in enumerate(matching_observations_in_payload_group):
-                matching_existing_observation = matching_observations_in_existing_group[index]
-                member['uuid'] = matching_existing_observation['uuid']
-                if len(member.get('groupMembers', [])) >=1 :
-                    self.transform_group(member["groupMembers"], matching_existing_observation["groupMembers"])
+                if index < len(matching_observations_in_existing_group):
+                    matching_existing_observation = matching_observations_in_existing_group[index]
+                    member['uuid'] = matching_existing_observation['uuid']
+                    if len(member.get('groupMembers', [])) >=1 :
+                        self.transform_group(member["groupMembers"], matching_existing_observation["groupMembers"])
 
 
     def get_unique_concept_uuids(self, group):

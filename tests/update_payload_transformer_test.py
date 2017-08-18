@@ -148,3 +148,17 @@ def describe_update_payload_transformer():
             existing_observation = mock_existing_observation()
             transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
             assert transformed_payload.get("encounterUuid") == "mockEncounterUuid"
+
+
+        def should_not_have_uuid_if_no_matching_existing_observation():
+            payload = mock_payload()
+            payload["observations"][0]["groupMembers"].append(mock_observation("mockConceptUuidC", "mockNestedConceptNameC", {
+                "value": 16
+            }))
+            existing_observation = mock_existing_observation()
+            existing_observation["groupMembers"].append( mock_observation("mockConceptUuidB", "mockConceptNameB", {
+                "value": 7,
+                "uuid": "mockObservationUuid2"
+            }))
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload["observations"][0]["groupMembers"][0].get("uuid") == None
