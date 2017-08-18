@@ -29,7 +29,8 @@ def describe_update_payload_transformer():
             "value": 3,
             "type": "Numeric",
             "uuid": "mockObservationUuid1",
-            "groupMembers": []
+            "groupMembers": [],
+            "encounterUuid": "mockEncounterUuid"
         })
 
     def describe_transform():
@@ -141,3 +142,9 @@ def describe_update_payload_transformer():
             existing_observation = mock_observation("mockConceptUuidA", "mockConceptNameA", {"uuid": "mockObservationUuid1", "value": 7})
             transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
             assert transformed_payload["observations"][0].get("groupMembers") == None
+
+        def should_have_encounter_uuid():
+            payload = mock_payload()
+            existing_observation = mock_existing_observation()
+            transformed_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
+            assert transformed_payload.get("encounterUuid") == "mockEncounterUuid"

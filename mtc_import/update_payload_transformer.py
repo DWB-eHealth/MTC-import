@@ -7,6 +7,7 @@ class UpdatePayloadTransformer:
 
     def transform(self):
         transformed_payload = self.payload
+        transformed_payload["encounterUuid"] = self.existing_observation.get("encounterUuid")
         self.transform_group(transformed_payload['observations'], [self.existing_observation])
         return transformed_payload
 
