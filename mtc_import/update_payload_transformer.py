@@ -7,7 +7,7 @@ class UpdatePayloadTransformer:
 
     def transform(self):
         transformed_payload = self.payload
-        self.transform_group([transformed_payload], [self.existing_observation])
+        self.transform_group(transformed_payload['observations'], [self.existing_observation])
         return transformed_payload
 
     def transform_group(self, payload_group, existing_group):

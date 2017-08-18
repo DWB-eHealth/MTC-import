@@ -102,5 +102,4 @@ class BahmniAPIService:
             "observationUuid" : observation_uuid
         }
         result = self.get(url, params)
-        print json.dumps(result, indent=2)
         return result
