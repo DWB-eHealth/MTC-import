@@ -2,11 +2,12 @@ import datetime
 
 
 class MTCFormPayload:
-    def __init__(self, mtc_form, patient_uuid, patient_program_uuid, api_service):
+    def __init__(self, mtc_form, patient_uuid, patient_program_uuid, api_service, location_uuid):
         self.mtc_form = mtc_form
         self.patient_uuid = patient_uuid
         self.patient_program_uuid = patient_program_uuid
         self.api_service = api_service
+        self.location_uuid = location_uuid
 
     def build_observation(self, concept_name, observation_data):
         observation = {
@@ -25,6 +26,7 @@ class MTCFormPayload:
 
         return {
             "patientUuid": self.patient_uuid,
+            "locationUuid": self.location_uuid,
             "context":{
                 "patientProgramUuid": self.patient_program_uuid
             },
