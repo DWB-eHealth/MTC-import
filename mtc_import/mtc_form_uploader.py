@@ -13,6 +13,11 @@ class MTCFormUploader:
         if location_uuid is None:
             print "[ERROR] Login location does not exist"
             return
+        encounter_type = "Consultation"
+        encounter_type_uuid = self.api_service.get_encounter_type_uuid(encounter_type)
+        if encounter_type_uuid is None:
+            print "[ERROR] Encounter type does not exist for %s" %(encounter_type)
+            return
 
         patient_uuid = self.api_service.get_patient_uuid(self.mtc_form.registration_number, location_uuid)
         if patient_uuid is None:
@@ -27,7 +32,7 @@ class MTCFormUploader:
         existing_forms = self.api_service.get_patient_program_forms(patient_uuid, patient_program_uuid, "Monthly Treatment Completeness Template")
         form_uuid = ExistingMTCForms(existing_forms).get_observation_uuid_for_year_and_month(self.mtc_form.year, self.mtc_form.month)
         if form_uuid is None:
-            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service, location_uuid).build_payload()
+            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service, location_uuid, encounter_type_uuid).build_payload()
             if self.api_service.create_or_update_encounter(payload):
                 print "Created new MTC form for patient with Registration Number:%s Month:%s Year:%s" \
                       % (self.mtc_form.registration_number, self.mtc_form.month, self.mtc_form.year)
@@ -36,7 +41,7 @@ class MTCFormUploader:
                       % (self.mtc_form.registration_number, self.mtc_form.month, self.mtc_form.year)
         else:
             existing_observation = self.api_service.get_observation(form_uuid)
-            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service, location_uuid).build_payload()
+            payload = MTCFormPayload(self.mtc_form, patient_uuid, patient_program_uuid, self.api_service, location_uuid, encounter_type_uuid).build_payload()
             update_payload = UpdatePayloadTransformer(payload, existing_observation).transform()
             if self.api_service.create_or_update_encounter(update_payload):
                 print "Updated MTC form for patient with Registration Number:%s Month:%s Year:%s" \

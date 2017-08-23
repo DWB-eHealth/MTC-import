@@ -103,3 +103,11 @@ class BahmniAPIService:
         }
         result = self.get(url, params)
         return result
+
+    def get_encounter_type_uuid(self, encounter_type):
+        url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/bahmnicore/config/bahmniencounter")
+        params = {
+            "callerContext": "REGISTRATION_CONCEPTS"
+        }
+        results = self.get(url, params).get("encounterTypes", [])
+        return results.get(encounter_type)
