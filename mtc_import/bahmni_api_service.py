@@ -109,5 +109,5 @@ class BahmniAPIService:
         params = {
             "callerContext": "REGISTRATION_CONCEPTS"
         }
-        results = self.get(url, params).get("encounterTypes", [])
+        results = self.get(url, params).get("encounterTypes", {})
         return results.get(encounter_type)
