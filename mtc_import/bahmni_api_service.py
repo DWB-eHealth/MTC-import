@@ -13,7 +13,7 @@ class BahmniAPIService:
         self.concept_uuid_cache = {}
 
         # Disabling InsecureRequestWarning in development environment since SSL certificate is unverified
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        urllib3.disable_warnings()
 
     def get(self, url, params):
         response = requests.get(url, auth=(self.username, self.password), params=params, verify=False)
