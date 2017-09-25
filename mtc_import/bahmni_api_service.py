@@ -48,16 +48,23 @@ class BahmniAPIService:
         else:
             return None
 
-    def get_patient_program_uuid(self, patient_uuid):
+    def get_patient_program_uuid(self, patient_uuid, registration_number):
         url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/bahmniprogramenrollment")
         params = {
-            "patient": patient_uuid
+            "patient": patient_uuid,
+            "v": "full"
         }
         results = self.get(url, params)['results']
-        if len(results) == 1:
-            return results[0]['uuid']
+        matching_results = [result for result in results if self.is_matching_program_enrollment(result, registration_number)]
+        if len(matching_results) == 1:
+            return matching_results[0]['uuid']
         else:
             return None
+
+    def is_matching_program_enrollment(self, program_enrollment, registration_number):
+        attributes = program_enrollment["attributes"]
+        matching_attributes = [attribute for attribute in attributes if attribute["attributeType"]["display"] == "Registration Number"]
+        return len(matching_attributes) == 1 and matching_attributes[0]['value'] == registration_number
 
     def get_patient_program_forms(self, patient_uuid, patient_program_uuid, form_name):
         url = "%s%s" % (self.url, "/openmrs/ws/rest/v1/obs")

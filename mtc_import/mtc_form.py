@@ -33,7 +33,7 @@ class DotRatePerDrugForm:
 
     def parse_days(self, csv_row, column):
         string_value = csv_row.get(column)
-        return int(string_value) if string_value else None
+        return float(string_value) if string_value else None
 
     def is_valid(self):
         return self.prescribed_days and self.observed_days and self.missed_days and self.drug_name
