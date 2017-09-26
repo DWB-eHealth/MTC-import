@@ -15,13 +15,13 @@ class DotRatePerDrugForm:
         "Cs": "Cycloserine",
         "Trd": "Terizidone",
         "PAS": "P-Aminosalicylic Acid",
-        "PAS-Na": "P-Aminosalicylic Acid Monosodium Salt",
+        "PAS Na": "P-Aminosalicylic Acid Monosodium Salt",
         "Bdq": "Bedaquiline",
         "Dlm": "Delamanid",
         "Lzd": "Linezolid",
         "Cfz": "Clofazimine",
-        "Imp/Cln": "Cilastatin / Imipenem",
-        "Amx/Clv": "Amoxicillin And Clavulanic Acid",
+        "ImpCln": "Cilastatin / Imipenem",
+        "Amx-Clv": "Amoxicillin And Clavulanic Acid",
         "T": "Thioacetazone"
     }
 
