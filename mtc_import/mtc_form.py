@@ -17,12 +17,13 @@ class DotRatePerDrugForm:
         "PAS": "P-Aminosalicylic Acid",
         "PAS Na": "P-Aminosalicylic Acid Monosodium Salt",
         "Bdq": "Bedaquiline",
-        "Dlm": "Delamanid",
+        "Dld": "Delamanid",
         "Lzd": "Linezolid",
         "Cfz": "Clofazimine",
         "ImpCln": "Cilastatin / Imipenem",
         "Amx-Clv": "Amoxicillin And Clavulanic Acid",
-        "T": "Thioacetazone"
+        "Thz": "Thioacetazone",
+        "hdH": "Isoniazid"
     }
 
     def __init__(self, drug_abbreviation, csv_row):
