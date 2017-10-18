@@ -71,9 +71,9 @@ def describe_mtc_form():
                 'DBdq': '15',
                 'OBdq': '8',
                 'MBdq': '6',
-                'DDlm': '12',
-                'ODlm': '4',
-                'MDlm': '3'
+                'DDld': '12',
+                'ODld': '4',
+                'MDld': '3'
             })
             form = MTCForm(csv_row)
             assert len(form.dot_rate_per_drug) == 2

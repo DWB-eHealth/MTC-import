@@ -37,7 +37,7 @@ class DotRatePerDrugForm:
         return float(string_value) if string_value else None
 
     def is_valid(self):
-        return self.prescribed_days and self.observed_days and self.missed_days and self.drug_name and self.prescribed_days > 0 and self.observed_days > 0 and self.missed_days > 0
+        return (self.prescribed_days or self.prescribed_days == 0) and (self.observed_days or self.observed_days == 0) and (self.missed_days or self.missed_days == 0) and self.drug_name and self.prescribed_days >= 0 and self.observed_days >= 0 and self.missed_days >= 0
 
 class MTCForm:
     def __init__(self, csv_row):
