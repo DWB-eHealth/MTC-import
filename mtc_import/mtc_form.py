@@ -23,7 +23,8 @@ class DotRatePerDrugForm:
         "ImpCln": "Cilastatin / Imipenem",
         "Amx-Clv": "Amoxicillin And Clavulanic Acid",
         "Thz": "Thioacetazone",
-        "hdH": "Isoniazid"
+        "hdH": "Isoniazid",
+        "Clr": "Clarythromicin"
     }
 
     def __init__(self, drug_abbreviation, csv_row):
